@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import json
-from entrepreneur.models import Nationality
+from parametres.models import Nationality
 from pathlib import Path
 
 

@@ -2,7 +2,9 @@ from django.db import models
 from authentication.models import User
 from .validators import (validate_french_ss_number,
                          validate_iban)
+from parametres.validators import (validate_account)
 from datetime import date
+from parametres.models import (Nationality, Status)
 
 SEXE_CHOICES = [
     ("H", "Homme"),
@@ -17,18 +19,6 @@ FAMILY_SITUATION_CHOICES = [
     ("PA", "Pacsé"),
 
 ]
-
-
-class Nationality(models.Model):
-    code = models.CharField(max_length=10, unique=True)
-    libelle = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name = "Nationalité"
-        verbose_name_plural = "Nationalités"
-
-    def __str__(self):
-        return self.libelle
 
 
 class Study_Level(models.Model):
@@ -74,6 +64,14 @@ class Entrepreneur(models.Model):
     study_level = models.ForeignKey(Study_Level, null=True,
                                     on_delete=models.SET_NULL,
                                     verbose_name="Niveau d'étude")
+    entry_status = models.ForeignKey(Status, null=True,
+                                     on_delete=models.SET_NULL)
+    expense_account = models.CharField(max_length=8, null=True, blank=True,
+                                       verbose_name="Compte Tiers ndf",
+                                       validators=[validate_account])
+    salary_account = models.CharField(max_length=8, null=True, blank=True,
+                                      validators=[validate_account],
+                                      verbose_name="Compte tiers salaire")
 
     def age(self):
         if not self.birthdate:
